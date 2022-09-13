@@ -1,4 +1,3 @@
-//package Extractors;
 
 // File handling
 
@@ -6,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 // Datatype for returning metadata
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import org.apache.tika.parser.pdf.PDFParser;
 import org.apache.tika.sax.BodyContentHandler;
 
 // Exception handling
+import org.json.simple.JSONObject;
 import org.xml.sax.SAXException;
 
 public class PDFExtractor {
@@ -44,8 +45,10 @@ public class PDFExtractor {
         }
         try {
             pdfparser.parse(inputstream, handler, metadata, pcontext);
-            // For testing purposes, will be replaced by getDocumentText in practice
-            System.out.println(handler.toString());
+            String output = getDocumentText();
+            PrintWriter pw = new PrintWriter("output.txt");
+            pw.println(output);
+            pw.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -67,6 +70,7 @@ public class PDFExtractor {
         for (String name: metadatanames) {
             metamap.put(name, metadata.get(name));
         }
-        return metamap;
+        JSONObject output = new JSONObject(metamap);
+        return output;
     }
 }
